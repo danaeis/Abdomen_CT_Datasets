@@ -201,34 +201,64 @@
 
         .table-container {
             overflow-x: auto;
+            overflow-y: auto;
+            max-height: 600px;
             border-radius: 8px;
             border: 1px solid var(--border);
+            position: relative;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         th {
             background: var(--primary);
             color: white;
-            padding: 1rem;
+            padding: 0.75rem;
             text-align: left;
             font-weight: 600;
             position: sticky;
             top: 0;
             z-index: 10;
+            white-space: nowrap;
         }
 
         td {
-            padding: 0.75rem 1rem;
+            padding: 0.6rem 0.75rem;
             border-bottom: 1px solid var(--border);
+            white-space: nowrap;
         }
 
         tr:hover {
             background: #f8f9fa;
+        }
+
+        .total-row {
+            background: #fff8dc !important;
+            font-weight: 600;
+            border-top: 3px solid var(--accent);
+            position: sticky;
+            bottom: 0;
+        }
+
+        .total-row td {
+            font-weight: 600;
+            color: var(--primary);
+            background: #fff8dc;
+        }
+
+        .paper-link {
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .paper-link:hover {
+            text-decoration: underline;
+            color: var(--accent);
         }
 
         .chart-container {
@@ -375,14 +405,7 @@
                 <div class="table-container">
                     <table id="datasetsTable">
                         <thead>
-                            <tr>
-                                <th>Dataset</th>
-                                <th>Year</th>
-                                <th>Citations</th>
-                                <th>Public CTs</th>
-                                <th>Total CTs</th>
-                                <th>Organs</th>
-                            </tr>
+                            <tr id="datasetsTableHeader"></tr>
                         </thead>
                         <tbody></tbody>
                     </table>
@@ -397,15 +420,7 @@
                 <div class="table-container">
                     <table id="organsTable">
                         <thead>
-                            <tr>
-                                <th>Dataset</th>
-                                <th>Pancreas</th>
-                                <th>Liver</th>
-                                <th>Spleen</th>
-                                <th>Stomach</th>
-                                <th>Kidney</th>
-                                <th>Colon</th>
-                            </tr>
+                            <tr id="organsTableHeader"></tr>
                         </thead>
                         <tbody></tbody>
                     </table>
@@ -438,13 +453,7 @@
                 <div class="table-container">
                     <table id="biasTable">
                         <thead>
-                            <tr>
-                                <th>Dataset</th>
-                                <th>Ethics Approval</th>
-                                <th>Pseudonymization</th>
-                                <th>Commercial Use</th>
-                                <th>Demographic Info</th>
-                            </tr>
+                            <tr id="biasTableHeader"></tr>
                         </thead>
                         <tbody></tbody>
                     </table>
@@ -469,6 +478,8 @@
         let datasetsData = [];
         let organsData = [];
         let biasData = [];
+        let totalRow = {};
+        let columns = {};
 
         // Load data
         fetch('data.json')
@@ -477,6 +488,8 @@
                 datasetsData = data.datasets;
                 organsData = data.organs;
                 biasData = data.bias;
+                totalRow = data.total || {};
+                columns = data.columns || {};
                 initializeData();
             })
             .catch(error => console.error('Error loading data:', error));
@@ -491,62 +504,106 @@
 
         function updateStats() {
             const totalDatasets = datasetsData.length;
-            const totalCTs = datasetsData.reduce((sum, d) => sum + (parseInt(d['number of CT studies']) || 0), 0);
-            const publicCTs = datasetsData.reduce((sum, d) => sum + (parseInt(d['number of public CT studies']) || 0), 0);
+            const totalCTs = totalRow['number of CT studies'] || datasetsData.reduce((sum, d) => sum + (parseInt(d['number of CT studies']) || 0), 0);
+            const publicCTs = totalRow['number of public CT studies'] || datasetsData.reduce((sum, d) => sum + (parseInt(d['number of public CT studies']) || 0), 0);
             const avgCitations = Math.round(datasetsData.reduce((sum, d) => sum + (parseInt(d.Citations) || 0), 0) / totalDatasets);
 
             document.getElementById('totalDatasets').textContent = totalDatasets;
-            document.getElementById('totalCTStudies').textContent = totalCTs.toLocaleString();
-            document.getElementById('publicCTStudies').textContent = publicCTs.toLocaleString();
+            document.getElementById('totalCTStudies').textContent = totalCTs.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            document.getElementById('publicCTStudies').textContent = publicCTs.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             document.getElementById('avgCitations').textContent = avgCitations;
         }
 
+        function formatCellValue(value, columnName) {
+            if (value === null || value === undefined || value === '') {
+                return '-';
+            }
+            
+            // If it's a paper link column
+            if (columnName === 'paper link') {
+                const strValue = String(value).trim();
+                if (strValue && strValue !== '-' && strValue !== 'link') {
+                    const url = strValue.startsWith('http') ? strValue : `https://${strValue}`;
+                    return `<a href="${url}" target="_blank" class="paper-link">📄 View Paper</a>`;
+                }
+                return '-';
+            }
+            
+            return String(value);
+        }
+
         function renderDatasets() {
-            const tbody = document.getElementById('datasetsTable').querySelector('tbody');
-            tbody.innerHTML = datasetsData.map(d => `
-                <tr>
-                    <td><strong>${d.dataset || '-'}</strong></td>
-                    <td>${d['year of publication'] || '-'}</td>
-                    <td>${d.Citations || '-'}</td>
-                    <td>${d['number of public CT studies'] || '-'}</td>
-                    <td>${d['number of CT studies'] || '-'}</td>
-                    <td>${d['Annotated Organ Name'] || '-'}</td>
-                </tr>
-            `).join('');
+            const table = document.getElementById('datasetsTable');
+            const thead = document.getElementById('datasetsTableHeader');
+            const tbody = table.querySelector('tbody');
+            
+            // Get all columns
+            const cols = columns.datasets || Object.keys(datasetsData[0] || {});
+            
+            // Render headers
+            thead.innerHTML = cols.map(col => `<th>${col}</th>`).join('');
+            
+            // Render data rows
+            let rowsHTML = datasetsData.map(d => {
+                return `<tr>${cols.map(col => `<td>${formatCellValue(d[col], col)}</td>`).join('')}</tr>`;
+            }).join('');
+            
+            // Add total row
+            if (Object.keys(totalRow).length > 0) {
+                rowsHTML += '<tr class="total-row">' + cols.map(col => {
+                    if (col === 'dataset') {
+                        return '<td><strong>TOTAL</strong></td>';
+                    }
+                    const value = totalRow[col];
+                    return `<td>${formatCellValue(value, col)}</td>`;
+                }).join('') + '</tr>';
+            }
+            
+            tbody.innerHTML = rowsHTML;
         }
 
         function renderOrgans() {
-            const tbody = document.getElementById('organsTable').querySelector('tbody');
-            tbody.innerHTML = organsData.slice(0, 20).map(d => `
-                <tr>
-                    <td><strong>${d['Unnamed: 0'] || '-'}</strong></td>
-                    <td>${d['Pancreas'] || '-'}</td>
-                    <td>${d['Liver'] || '-'}</td>
-                    <td>${d['Spleen'] || '-'}</td>
-                    <td>${d['Stomach'] || '-'}</td>
-                    <td>${d['Kidney'] || '-'}</td>
-                    <td>${d['Colon'] || '-'}</td>
-                </tr>
-            `).join('');
+            const table = document.getElementById('organsTable');
+            const thead = document.getElementById('organsTableHeader');
+            const tbody = table.querySelector('tbody');
+            
+            // Get all columns
+            const cols = columns.organs || Object.keys(organsData[0] || {});
+            
+            // Render headers
+            thead.innerHTML = cols.map(col => `<th>${col}</th>`).join('');
+            
+            // Render all data rows
+            tbody.innerHTML = organsData.map(d => {
+                return `<tr>${cols.map(col => `<td>${formatCellValue(d[col], col)}</td>`).join('')}</tr>`;
+            }).join('');
         }
 
         function renderBias() {
-            const tbody = document.getElementById('biasTable').querySelector('tbody');
+            const table = document.getElementById('biasTable');
+            const thead = document.getElementById('biasTableHeader');
+            const tbody = table.querySelector('tbody');
+            
+            // Get all columns
+            const cols = columns.bias || Object.keys(biasData[0] || {});
+            
+            // Render headers
+            thead.innerHTML = cols.map(col => `<th>${col}</th>`).join('');
+            
+            // Render all data rows
             tbody.innerHTML = biasData.map(d => {
-                const ethicsApproval = d['Ethic - approval'] || '';
-                const pseudo = d['Ethic - pseudonymization'] || '';
-                const commercial = d['Ethic - commercial use approval'] || '';
-                const demographic = d['Desc - demographic'] || '';
-
-                return `
-                    <tr>
-                        <td><strong>${d.dataset || '-'}</strong></td>
-                        <td><span class="badge ${getBadgeClass(ethicsApproval)}">${ethicsApproval || 'N/A'}</span></td>
-                        <td><span class="badge ${getBadgeClass(pseudo)}">${pseudo || 'N/A'}</span></td>
-                        <td><span class="badge ${getBadgeClass(commercial)}">${commercial || 'N/A'}</span></td>
-                        <td>${demographic ? '✓' : '-'}</td>
-                    </tr>
-                `;
+                return `<tr>${cols.map(col => {
+                    const value = d[col];
+                    // Add badge styling for ethics/approval columns
+                    if (col.toLowerCase().includes('ethic') || col.toLowerCase().includes('approval')) {
+                        const badgeClass = getBadgeClass(value);
+                        const displayValue = formatCellValue(value, col);
+                        if (displayValue !== '-') {
+                            return `<td><span class="badge ${badgeClass}">${displayValue}</span></td>`;
+                        }
+                    }
+                    return `<td>${formatCellValue(value, col)}</td>`;
+                }).join('')}</tr>`;
             }).join('');
         }
 
@@ -594,7 +651,7 @@
                 const organs = String(d['Annotated Organ Name'] || '').split(',');
                 organs.forEach(organ => {
                     const o = organ.trim();
-                    if (o) organCounts[o] = (organCounts[o] || 0) + 1;
+                    if (o && o !== '-') organCounts[o] = (organCounts[o] || 0) + 1;
                 });
             });
 
@@ -659,15 +716,48 @@
             });
         });
 
-        // Search
+        // Search functionality
         document.getElementById('datasetSearch').addEventListener('input', (e) => {
             const search = e.target.value.toLowerCase();
             const rows = document.querySelectorAll('#datasetsTable tbody tr');
             rows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(search) ? '' : 'none';
+                if (!row.classList.contains('total-row')) {
+                    const text = row.textContent.toLowerCase();
+                    row.style.display = text.includes(search) ? '' : 'none';
+                }
             });
         });
+
+        // Filter functionality for bias table
+        function applyBiasFilters() {
+            const ethicsFilter = document.getElementById('ethicsFilter').value;
+            const commercialFilter = document.getElementById('commercialFilter').value;
+            const rows = document.querySelectorAll('#biasTable tbody tr');
+            
+            rows.forEach((row, index) => {
+                const data = biasData[index];
+                if (!data) return;
+                
+                let show = true;
+                
+                if (ethicsFilter !== 'all') {
+                    const ethics = String(data['Ethic - approval'] || '').toLowerCase();
+                    show = show && ((ethicsFilter === 'yes' && ethics.includes('yes')) || 
+                                   (ethicsFilter === 'no' && ethics.includes('no')));
+                }
+                
+                if (commercialFilter !== 'all') {
+                    const commercial = String(data['Ethic - commercial use approval'] || '').toLowerCase();
+                    show = show && ((commercialFilter === 'yes' && commercial.includes('yes')) || 
+                                   (commercialFilter === 'no' && commercial.includes('no')));
+                }
+                
+                row.style.display = show ? '' : 'none';
+            });
+        }
+
+        document.getElementById('ethicsFilter').addEventListener('change', applyBiasFilters);
+        document.getElementById('commercialFilter').addEventListener('change', applyBiasFilters);
     </script>
 </body>
 </html>

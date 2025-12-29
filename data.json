@@ -37,7 +37,8 @@
       "annotation method": "manual",
       "Licence": "",
       "Unnamed: 35": "",
-      "Unnamed: 36": ""
+      "Unnamed: 36": "",
+      "paper_url": "https://doi.org/10.1109/TMI.2009.2013851"
     },
     {
       "dataset": "3D-IRCADb",
@@ -76,7 +77,8 @@
       "annotation method": "manual",
       "Licence": "CC BY-NC-ND 4.0",
       "Unnamed: 35": "",
-      "Unnamed: 36": "datasets ref git"
+      "Unnamed: 36": "datasets ref git",
+      "paper_url": "https://www.ircad.fr/research/data-sets/liver-segmentation-3d-ircadb-01/"
     },
     {
       "dataset": "VISCERAL Anatomy Benchmark",
@@ -115,7 +117,8 @@
       "annotation method": "manual",
       "Licence": "",
       "Unnamed: 35": "",
-      "Unnamed: 36": ""
+      "Unnamed: 36": "",
+      "paper_url": "https://doi.org/10.1109/TMI.2016.2578680"
     },
     {
       "dataset": "BTCV",
@@ -154,7 +157,8 @@
       "annotation method": "manual",
       "Licence": "CC BY 4.0",
       "Unnamed: 35": "",
-      "Unnamed: 36": ""
+      "Unnamed: 36": "",
+      "paper_url": "https://doi.org/10.7303/syn3193805"
     },
     {
       "dataset": "Colorectal-Liver-Metastases",
@@ -193,7 +197,8 @@
       "annotation method": "manual",
       "Licence": "CC BY 4.0",
       "Unnamed: 35": "",
-      "Unnamed: 36": ""
+      "Unnamed: 36": "",
+      "paper_url": "https://doi.org/10.1038/s41597-024-02958-1"
     },
     {
       "dataset": "DenseVNet\n(Multi-organ Abdominal CT Reference Standard Segmentations)",
@@ -232,7 +237,8 @@
       "annotation method": "manual",
       "Licence": "",
       "Unnamed: 35": "",
-      "Unnamed: 36": ""
+      "Unnamed: 36": "",
+      "paper_url": ""
     },
     {
       "dataset": "LiTS",
@@ -271,7 +277,8 @@
       "annotation method": "manual",
       "Licence": "CC BY-SA 4.0",
       "Unnamed: 35": "",
-      "Unnamed: 36": ""
+      "Unnamed: 36": "",
+      "paper_url": "https://doi.org/10.48550/arXiv.1901.04056"
     },
     {
       "dataset": "MSD-CT - Spleen task",
@@ -310,7 +317,8 @@
       "annotation method": "AI in the loop",
       "Licence": "CC-BY-SA4.0,",
       "Unnamed: 35": "",
-      "Unnamed: 36": ""
+      "Unnamed: 36": "",
+      "paper_url": "https://doi.org/10.1038/s41467-022-30695-9"
     },
     {
       "dataset": "Pancreatic Cancer Survival Prediction",
@@ -349,7 +357,8 @@
       "annotation method": "manual",
       "Licence": "",
       "Unnamed: 35": "",
-      "Unnamed: 36": ""
+      "Unnamed: 36": "",
+      "paper_url": "https://www.cancerimagingarchive.net/"
     },
     {
       "dataset": "MSD-CT - Colon task",
@@ -388,7 +397,8 @@
       "annotation method": "manual",
       "Licence": " CC-BY-SA4.0,",
       "Unnamed: 35": "",
-      "Unnamed: 36": ""
+      "Unnamed: 36": "",
+      "paper_url": "https://doi.org/10.1038/s41467-022-30695-9"
     },
     {
       "dataset": "SegThor",
@@ -427,7 +437,8 @@
       "annotation method": "manual",
       "Licence": "",
       "Unnamed: 35": "",
-      "Unnamed: 36": ""
+      "Unnamed: 36": "",
+      "paper_url": "https://doi.org/10.1109/IPTA50016.2020.9286700"
     },
     {
       "dataset": "CHAOS",
@@ -466,7 +477,8 @@
       "annotation method": "manual",
       "Licence": "CC BY-SA 4.0",
       "Unnamed: 35": "",
-      "Unnamed: 36": ""
+      "Unnamed: 36": "",
+      "paper_url": "https://doi.org/10.1016/j.media.2020.101950"
     },
     {
       "dataset": "CT-ORG",
@@ -505,7 +517,8 @@
       "annotation method": "AI in the loop",
       "Licence": "CC BY 3.0",
       "Unnamed: 35": "",
-      "Unnamed: 36": ""
+      "Unnamed: 36": "",
+      "paper_url": "https://doi.org/10.1038/s41597-020-00715-8"
     },
     {
       "dataset": "MSD-CT - Pancreas task",
@@ -544,7 +557,8 @@
       "annotation method": "manual",
       "Licence": "CC BY-SA 4.0",
       "Unnamed: 35": "",
-      "Unnamed: 36": ""
+      "Unnamed: 36": "",
+      "paper_url": "https://doi.org/10.1038/s41467-022-30695-9"
     },
     {
       "dataset": "MSD-CT - Liver task",
@@ -583,7 +597,8 @@
       "annotation method": "manual",
       "Licence": " CC-BY-SA4.0,",
       "Unnamed: 35": "",
-      "Unnamed: 36": ""
+      "Unnamed: 36": "",
+      "paper_url": "https://doi.org/10.1038/s41467-022-30695-9"
     },
     {
       "dataset": "MSD-CT - HepaticVessel task",
@@ -622,7 +637,8 @@
       "annotation method": "AI in the loop",
       "Licence": " CC-BY-SA4.0,",
       "Unnamed: 35": "",
-      "Unnamed: 36": ""
+      "Unnamed: 36": "",
+      "paper_url": "https://doi.org/10.1038/s41467-022-30695-9"
     },
     {
       "dataset": "Pancreas-CT",
@@ -661,7 +677,8 @@
       "annotation method": "manual",
       "Licence": "CC BY 3.0",
       "Unnamed: 35": "",
-      "Unnamed: 36": ""
+      "Unnamed: 36": "",
+      "paper_url": "https://doi.org/10.7937/K9/TCIA.2016.tNB1kqBU"
     },
     {
       "dataset": "AbdomenCT-1K",
@@ -700,7 +717,8 @@
       "annotation method": "AI in the loop",
       "Licence": "CC BY-NC-SA",
       "Unnamed: 35": "",
-      "Unnamed: 36": ""
+      "Unnamed: 36": "",
+      "paper_url": "https://doi.org/10.1109/TPAMI.2021.3139829"
     },
     {
       "dataset": "WORC - GIST dataset",
@@ -739,7 +757,8 @@
       "annotation method": "manual",
       "Licence": "Apache License, Version 2.0",
       "Unnamed: 35": "",
-      "Unnamed: 36": ""
+      "Unnamed: 36": "",
+      "paper_url": "https://doi.org/10.5281/zenodo.5221034"
     },
     {
       "dataset": "WORC - CRLM dataset",
@@ -778,7 +797,8 @@
       "annotation method": "manual",
       "Licence": "Apache License, Version 2.0",
       "Unnamed: 35": "",
-      "Unnamed: 36": ""
+      "Unnamed: 36": "",
+      "paper_url": "https://doi.org/10.5281/zenodo.5221034"
     },
     {
       "dataset": "Pediatric",
@@ -817,7 +837,8 @@
       "annotation method": "manual",
       "Licence": "",
       "Unnamed: 35": "",
-      "Unnamed: 36": ""
+      "Unnamed: 36": "",
+      "paper_url": "https://doi.org/10.7937/TCIA.X0H0-1706"
     },
     {
       "dataset": "WORD",
@@ -856,7 +877,8 @@
       "annotation method": "manual",
       "Licence": "GNU GPL 3.0",
       "Unnamed: 35": "",
-      "Unnamed: 36": ""
+      "Unnamed: 36": "",
+      "paper_url": "https://doi.org/10.1016/j.media.2022.102642"
     },
     {
       "dataset": "AMOS22",
@@ -895,7 +917,8 @@
       "annotation method": "AI in the loop",
       "Licence": "CC BY-NC-SA        ",
       "Unnamed: 35": "",
-      "Unnamed: 36": ""
+      "Unnamed: 36": "",
+      "paper_url": ""
     },
     {
       "dataset": "KiPA22",
@@ -934,7 +957,8 @@
       "annotation method": "manual",
       "Licence": "CC BY-ND 4.0",
       "Unnamed: 35": "",
-      "Unnamed: 36": ""
+      "Unnamed: 36": "",
+      "paper_url": "https://kipa22.grand-challenge.org/"
     },
     {
       "dataset": "StageII-Colorectal-CT",
@@ -973,7 +997,8 @@
       "annotation method": "manual",
       "Licence": "",
       "Unnamed: 35": "",
-      "Unnamed: 36": ""
+      "Unnamed: 36": "",
+      "paper_url": "https://doi.org/10.7937/p5k5-tg43"
     },
     {
       "dataset": "HCC-TACE-Seg",
@@ -1012,7 +1037,8 @@
       "annotation method": "manual",
       "Licence": "CC BY 4.0",
       "Unnamed: 35": "",
-      "Unnamed: 36": ""
+      "Unnamed: 36": "",
+      "paper_url": "https://doi.org/10.7937/TCIA.5FNA-0924"
     },
     {
       "dataset": "AutoPET (FDG-PET/CT)",
@@ -1051,7 +1077,8 @@
       "annotation method": "manual",
       "Licence": "",
       "Unnamed: 35": "",
-      "Unnamed: 36": ""
+      "Unnamed: 36": "",
+      "paper_url": "https://doi.org/10.5281/zenodo.6362493"
     },
     {
       "dataset": "DAP Atlas",
@@ -1090,7 +1117,8 @@
       "annotation method": "AI + randomly revised",
       "Licence": "",
       "Unnamed: 35": "",
-      "Unnamed: 36": ""
+      "Unnamed: 36": "",
+      "paper_url": "https://arxiv.org/abs/2307.13375"
     },
     {
       "dataset": "Abdominal Trauma Det",
@@ -1129,7 +1157,8 @@
       "annotation method": "AI in the loop",
       "Licence": "",
       "Unnamed: 35": "",
-      "Unnamed: 36": ""
+      "Unnamed: 36": "",
+      "paper_url": "https://doi.org/10.1148/ryai.240101"
     },
     {
       "dataset": "TotalSegmentator",
@@ -1168,7 +1197,8 @@
       "annotation method": "AI in the loop",
       "Licence": "CC BY 4.0",
       "Unnamed: 35": "",
-      "Unnamed: 36": ""
+      "Unnamed: 36": "",
+      "paper_url": "https://doi.org/10.1148/ryai.230024"
     },
     {
       "dataset": "AbdomenAtlas 1.1",
@@ -1207,7 +1237,8 @@
       "annotation method": "AI in the loop",
       "Licence": "",
       "Unnamed: 35": "",
-      "Unnamed: 36": ""
+      "Unnamed: 36": "",
+      "paper_url": "https://doi.org/10.1016/j.media.2024.103285"
     },
     {
       "dataset": "FLARE\u201923",
@@ -1246,7 +1277,8 @@
       "annotation method": "AI in the loop",
       "Licence": "CC BY-NC-ND 4.0",
       "Unnamed: 35": "",
-      "Unnamed: 36": ""
+      "Unnamed: 36": "",
+      "paper_url": ""
     },
     {
       "dataset": "AbdomenAtlas 1.0 (8k)",
@@ -1285,7 +1317,8 @@
       "annotation method": "AI in the loop",
       "Licence": "",
       "Unnamed: 35": "",
-      "Unnamed: 36": ""
+      "Unnamed: 36": "",
+      "paper_url": ""
     },
     {
       "dataset": "KiTS",
@@ -1324,7 +1357,8 @@
       "annotation method": "manual",
       "Licence": "CC BY-NC-SA 4.0 ",
       "Unnamed: 35": "",
-      "Unnamed: 36": ""
+      "Unnamed: 36": "",
+      "paper_url": "https://doi.org/10.7937/TCIA.2019.IX49E8NX"
     },
     {
       "dataset": "CPTAC-PDA-Tumor-Annotations",
@@ -1363,7 +1397,8 @@
       "annotation method": "AI in the loop",
       "Licence": "CC BY 4.0",
       "Unnamed: 35": "",
-      "Unnamed: 36": ""
+      "Unnamed: 36": "",
+      "paper_url": "https://doi.org/10.7937/BW9V-BX61"
     },
     {
       "dataset": "CPTAC-CCRCC-Tumor-Annotations",
@@ -1402,7 +1437,8 @@
       "annotation method": "AI in the loop",
       "Licence": "CC BY 4.0",
       "Unnamed: 35": "",
-      "Unnamed: 36": ""
+      "Unnamed: 36": "",
+      "paper_url": "https://doi.org/10.1007/s10278-013-9622-7"
     },
     {
       "dataset": "CARE",
@@ -1441,7 +1477,8 @@
       "annotation method": "manual",
       "Licence": "",
       "Unnamed: 35": "",
-      "Unnamed: 36": ""
+      "Unnamed: 36": "",
+      "paper_url": "https://arxiv.org/abs/2308.08283"
     },
     {
       "dataset": "low-dose CT",
@@ -1480,7 +1517,8 @@
       "annotation method": "manual",
       "Licence": "CC BY 3.0 and TCIA Restricted",
       "Unnamed: 35": "",
-      "Unnamed: 36": ""
+      "Unnamed: 36": "",
+      "paper_url": ""
     },
     {
       "dataset": "Aortic Vessel Tree (AVT) SEG.A.",
@@ -1519,7 +1557,8 @@
       "annotation method": "manual",
       "Licence": "",
       "Unnamed: 35": "",
-      "Unnamed: 36": ""
+      "Unnamed: 36": "",
+      "paper_url": ""
     },
     {
       "dataset": "CT Lymph Nodes",
@@ -1558,7 +1597,8 @@
       "annotation method": "manual",
       "Licence": "CC BY 3.0 ",
       "Unnamed: 35": "",
-      "Unnamed: 36": ""
+      "Unnamed: 36": "",
+      "paper_url": "https://doi.org/10.1007/978-3-319-10404-1_65"
     },
     {
       "dataset": "Adrenal-ACC-Ki67-Seg",
@@ -1597,7 +1637,8 @@
       "annotation method": "AI in the loop",
       "Licence": "CC BY 4.0",
       "Unnamed: 35": "",
-      "Unnamed: 36": ""
+      "Unnamed: 36": "",
+      "paper_url": "https://doi.org/10.1016/j.crad.2020.01.006"
     },
     {
       "dataset": "SAROS",
@@ -1636,7 +1677,8 @@
       "annotation method": "AI in the loop",
       "Licence": "CC BY 4.0; TCIA Restricted; CC BY 3.0 ; CC BY-NC 3.0 ",
       "Unnamed: 35": "",
-      "Unnamed: 36": ""
+      "Unnamed: 36": "",
+      "paper_url": ""
     },
     {
       "dataset": "AIMI Annotations initiative",
@@ -1675,7 +1717,8 @@
       "annotation method": "AI + randomly revised",
       "Licence": "CC BY 4.0",
       "Unnamed: 35": "",
-      "Unnamed: 36": ""
+      "Unnamed: 36": "",
+      "paper_url": "https://doi.org/10.5281/zenodo.13244892"
     },
     {
       "dataset": "CURVAS",
@@ -1714,46 +1757,8 @@
       "annotation method": "AI in the loop",
       "Licence": "CC BY-NC",
       "Unnamed: 35": "",
-      "Unnamed: 36": ""
-    },
-    {
-      "dataset": "",
-      "year of publication": "",
-      "journal/challenge": "",
-      "paper link": "",
-      "Citations": "",
-      "citation": "",
-      "number of public CT studies": 27419,
-      "number of private CT studies": 13380,
-      "number of CT studies": 40799,
-      "Satus of Cases": "",
-      "# of new CTs (public)": 51.90404213,
-      "# of new CTs (private)": "",
-      "# of new CTs (total)": 20509,
-      "new cases percent(%)": 50.26838893,
-      "dataset source of data": "",
-      "CT Study Location": "",
-      "number of slices in CT study (average)": "",
-      "volume size": "",
-      "clinical status": "",
-      "CT scan phases": "",
-      "CT scan device name (or detector)": "",
-      "# of classes": "",
-      "subjects age range and gender": "",
-      "anomaly label \n(cancer, tumor, enlarge,..)": false,
-      "Annotated Organ Name": "",
-      "Number of segmented slices": "",
-      "Labels for image/segmentation \n(what are the labels for CT scans. e.g: lebeled liver cancer or segmented liver cancer)": "",
-      "Inclusion criteria \n(how they found CT scans. e.g. before kidney donation, pancreatic cancer patients)": "",
-      "# of centers": "",
-      "where the data gathered": "",
-      "Country of centers": "",
-      "Who & How they did labeling\n(how they find these labeles. e.g. hospital information system (disease coding), clinican vavlidated, pathology confirmed)": "",
-      "Who & How they did segmentation\n(who and how they segmented these images. Was there any doubel check or reportof inter-segmenter variability?)": "",
-      "annotation method": "",
-      "Licence": "",
-      "Unnamed: 35": "",
-      "Unnamed: 36": ""
+      "Unnamed: 36": "",
+      "paper_url": "https://doi.org/10.5281/zenodo.10979642"
     }
   ],
   "organs": [
@@ -6659,5 +6664,45 @@
       "ref1 \n": "",
       "ref 2": ""
     }
-  ]
+  ],
+  "totals": {
+    "dataset": NaN,
+    "year of publication": NaN,
+    "journal/challenge": NaN,
+    "paper link": NaN,
+    "Citations": NaN,
+    "citation": NaN,
+    "number of public CT studies": 27419,
+    "number of private CT studies": 13380,
+    "number of CT studies": 40799,
+    "Satus of Cases": NaN,
+    "# of new CTs (public)": 51.90404213,
+    "# of new CTs (private)": NaN,
+    "# of new CTs (total)": 20509,
+    "new cases percent(%)": 50.26838893,
+    "dataset source of data": NaN,
+    "CT Study Location": NaN,
+    "number of slices in CT study (average)": NaN,
+    "volume size": NaN,
+    "clinical status": NaN,
+    "CT scan phases": NaN,
+    "CT scan device name (or detector)": NaN,
+    "# of classes": NaN,
+    "subjects age range and gender": NaN,
+    "anomaly label \n(cancer, tumor, enlarge,..)": false,
+    "Annotated Organ Name": NaN,
+    "Number of segmented slices": NaN,
+    "Labels for image/segmentation \n(what are the labels for CT scans. e.g: lebeled liver cancer or segmented liver cancer)": NaN,
+    "Inclusion criteria \n(how they found CT scans. e.g. before kidney donation, pancreatic cancer patients)": NaN,
+    "# of centers": NaN,
+    "where the data gathered": NaN,
+    "Country of centers": NaN,
+    "Who & How they did labeling\n(how they find these labeles. e.g. hospital information system (disease coding), clinican vavlidated, pathology confirmed)": NaN,
+    "Who & How they did segmentation\n(who and how they segmented these images. Was there any doubel check or reportof inter-segmenter variability?)": NaN,
+    "annotation method": NaN,
+    "Licence": NaN,
+    "Unnamed: 35": NaN,
+    "Unnamed: 36": NaN,
+    "paper_url": ""
+  }
 }
