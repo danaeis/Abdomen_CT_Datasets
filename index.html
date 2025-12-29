@@ -115,9 +115,9 @@
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 95%;          /* ← Uses 95% of screen for wide tables */
             margin: 0 auto;
-            padding: 2rem;
+            padding: 1.5rem;
         }
 
         .section {
@@ -199,17 +199,46 @@
             border-color: var(--secondary);
         }
 
+        /* ============================================
+           TABLE CONTAINER - Controls Scrolling
+           ============================================ */
         .table-container {
-            overflow-x: auto;
-            overflow-y: auto;
-            max-height: 600px;
+            overflow-x: auto;        /* ← HORIZONTAL SCROLL: Change to 'hidden' to disable */
+            overflow-y: auto;        /* ← VERTICAL SCROLL: Change to 'hidden' to disable */
+            max-height: 600px;       /* ← TABLE HEIGHT: Change this number (600px, 800px, etc.) */
             border-radius: 8px;
             border: 1px solid var(--border);
             position: relative;
         }
+        /* To disable all scrolling, remove overflow-x, overflow-y, and max-height */
+        
+        /* Better scrollbar appearance */
+        .table-container::-webkit-scrollbar {
+            height: 12px;            /* ← Horizontal scrollbar thickness */
+            width: 12px;             /* ← Vertical scrollbar thickness */
+        }
+        
+        .table-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 8px;
+        }
+        
+        .table-container::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 8px;
+        }
+        
+        .table-container::-webkit-scrollbar-thumb:hover {
+            background: #555;        /* ← Darker when hovering */
+        }
+        
+        /* ============================================
+           TABLE STYLING
+           ============================================ */
 
         table {
-            width: 100%;
+            width: max-content;      /* ← Table expands to fit all columns */
+            min-width: 100%;         /* ← But never smaller than container */
             border-collapse: collapse;
             font-size: 0.85rem;
         }
@@ -220,16 +249,17 @@
             padding: 0.75rem;
             text-align: left;
             font-weight: 600;
-            position: sticky;
-            top: 0;
+            position: sticky;       /* ← Makes header stay visible when scrolling */
+            top: 0;                 /* ← Sticks to top of container */
             z-index: 10;
-            white-space: nowrap;
+            white-space: nowrap;    /* ← Prevents header text from wrapping */
         }
 
         td {
             padding: 0.6rem 0.75rem;
             border-bottom: 1px solid var(--border);
-            white-space: nowrap;
+            white-space: nowrap;    /* ← CHANGE TO 'normal' to allow text wrapping */
+            /* max-width: 300px;     ← UNCOMMENT to limit column width */
         }
 
         tr:hover {
@@ -250,15 +280,18 @@
             background: #fff8dc;
         }
 
+        /* ============================================
+           PAPER LINKS - How links to papers appear
+           ============================================ */
         .paper-link {
-            color: var(--secondary);
+            color: var(--secondary);      /* ← Link color */
             text-decoration: none;
             font-weight: 500;
         }
 
         .paper-link:hover {
             text-decoration: underline;
-            color: var(--accent);
+            color: var(--accent);         /* ← Color when hovering */
         }
 
         .chart-container {
@@ -514,17 +547,24 @@
             document.getElementById('avgCitations').textContent = avgCitations;
         }
 
-        function formatCellValue(value, columnName) {
+        function formatCellValue(value, columnName, rowData) {
             if (value === null || value === undefined || value === '') {
                 return '-';
             }
             
-            // If it's a paper link column
+            // Handle paper links - look for actual URLs or DOIs
             if (columnName === 'paper link') {
                 const strValue = String(value).trim();
-                if (strValue && strValue !== '-' && strValue !== 'link') {
+                // Check if it's an actual URL (contains http or doi)
+                if (strValue && strValue !== '-' && strValue !== 'link' && 
+                    (strValue.includes('http') || strValue.includes('doi'))) {
                     const url = strValue.startsWith('http') ? strValue : `https://${strValue}`;
-                    return `<a href="${url}" target="_blank" class="paper-link">📄 View Paper</a>`;
+                    return `<a href="${url}" target="_blank" class="paper-link">📄 Paper</a>`;
+                }
+                // If dataset name is available, search for it
+                if (rowData && rowData.dataset) {
+                    const searchUrl = `https://scholar.google.com/scholar?q=${encodeURIComponent(rowData.dataset)}`;
+                    return `<a href="${searchUrl}" target="_blank" class="paper-link">🔍 Search</a>`;
                 }
                 return '-';
             }
@@ -543,9 +583,9 @@
             // Render headers
             thead.innerHTML = cols.map(col => `<th>${col}</th>`).join('');
             
-            // Render data rows
+            // Render data rows - PASS ROW DATA for paper link generation
             let rowsHTML = datasetsData.map(d => {
-                return `<tr>${cols.map(col => `<td>${formatCellValue(d[col], col)}</td>`).join('')}</tr>`;
+                return `<tr>${cols.map(col => `<td>${formatCellValue(d[col], col, d)}</td>`).join('')}</tr>`;
             }).join('');
             
             // Add total row
@@ -555,7 +595,7 @@
                         return '<td><strong>TOTAL</strong></td>';
                     }
                     const value = totalRow[col];
-                    return `<td>${formatCellValue(value, col)}</td>`;
+                    return `<td>${formatCellValue(value, col, totalRow)}</td>`;
                 }).join('') + '</tr>';
             }
             
