@@ -514,18 +514,44 @@
         let totalRow = {};
         let columns = {};
 
+        // ===========================================
+        // CONFIGURATION: Choose how to load data
+        // ===========================================
+        const USE_SEPARATE_FILES = false;  // ← Change to true to use separate files
+        
         // Load data
-        fetch('data.json')
-            .then(response => response.json())
-            .then(data => {
-                datasetsData = data.datasets;
-                organsData = data.organs;
-                biasData = data.bias;
-                totalRow = data.total || {};
-                columns = data.columns || {};
+        if (USE_SEPARATE_FILES) {
+            // Load from separate files (more flexible for updates)
+            Promise.all([
+                fetch('datasets_data.json').then(r => r.json()),
+                fetch('organs_data.json').then(r => r.json()),
+                fetch('bias_data.json').then(r => r.json())
+            ]).then(([datasets, organs, bias]) => {
+                datasetsData = datasets.datasets;
+                totalRow = datasets.total || {};
+                organsData = organs.organs;
+                biasData = bias.bias;
+                columns = {
+                    datasets: datasets.columns,
+                    organs: organs.columns,
+                    bias: bias.columns
+                };
                 initializeData();
-            })
-            .catch(error => console.error('Error loading data:', error));
+            }).catch(error => console.error('Error loading data:', error));
+        } else {
+            // Load from combined file (simpler, one file)
+            fetch('data.json')
+                .then(response => response.json())
+                .then(data => {
+                    datasetsData = data.datasets;
+                    organsData = data.organs;
+                    biasData = data.bias;
+                    totalRow = data.total || {};
+                    columns = data.columns || {};
+                    initializeData();
+                })
+                .catch(error => console.error('Error loading data:', error));
+        }
 
         function initializeData() {
             updateStats();
