@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abdomen CT Studies Review</title>
+    <link href="https://fonts.googleapis.com/css2?family=Spectral:wght@300;400;600;700&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1a3a52;
+            --secondary: #2c5f7e;
+            --accent: #d4af37;
+            --light: #f8f9fa;
+            --text: #2d3748;
+            --border: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Work Sans', sans-serif;
+            color: var(--text);
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.3;
+        }
+
+        h1 {
+            font-family: 'Spectral', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            font-weight: 300;
+            position: relative;
+            z-index: 1;
+        }
+
+        nav {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            padding: 0;
+        }
+
+        nav button {
+            padding: 1rem 1.5rem;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-family: 'Work Sans', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        nav button:hover {
+            color: var(--secondary);
+        }
+
+        nav button.active {
+            color: var(--secondary);
+        }
+
+        nav button.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 1.5rem;
+            right: 1.5rem;
+            height: 3px;
+            background: var(--accent);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+            border: 1px solid var(--border);
+        }
+
+        .card h2 {
+            font-family: 'Spectral', serif;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            font-weight: 600;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--accent);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            font-family: 'Spectral', serif;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-top: 0.5rem;
+        }
+
+        .search-filter {
+            margin-bottom: 1.5rem;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Work Sans', sans-serif;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--secondary);
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background: var(--primary);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin: 2rem 0;
+        }
+
+        .filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--primary);
+        }
+
+        .filter-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-family: 'Work Sans', sans-serif;
+            font-size: 0.95rem;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .badge-yes {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-no {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .badge-partial {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            background: white;
+            margin-top: 3rem;
+            border-top: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            nav button {
+                padding: 0.75rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Abdomen CT Studies Review Dataset</h1>
+        <p class="subtitle">Comprehensive Analysis of Public Abdomen CT Datasets</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><button class="nav-btn active" data-section="overview">Overview</button></li>
+            <li><button class="nav-btn" data-section="datasets">Dataset Features</button></li>
+            <li><button class="nav-btn" data-section="organs">Organ Analysis</button></li>
+            <li><button class="nav-btn" data-section="bias">Bias Evaluation</button></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <!-- Overview Section -->
+        <section id="overview" class="section active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalDatasets">-</div>
+                    <div class="stat-label">Total Datasets</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalCTStudies">-</div>
+                    <div class="stat-label">Total CT Studies</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="publicCTStudies">-</div>
+                    <div class="stat-label">Public CT Studies</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="avgCitations">-</div>
+                    <div class="stat-label">Avg Citations</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Dataset Publications by Year</h2>
+                <div class="chart-container">
+                    <canvas id="yearChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Top Annotated Organs</h2>
+                <div class="chart-container">
+                    <canvas id="organsChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Datasets Section -->
+        <section id="datasets" class="section">
+            <div class="card">
+                <h2>Dataset Features</h2>
+                <div class="search-filter">
+                    <input type="text" class="search-input" id="datasetSearch" placeholder="Search datasets...">
+                </div>
+                <div class="table-container">
+                    <table id="datasetsTable">
+                        <thead>
+                            <tr>
+                                <th>Dataset</th>
+                                <th>Year</th>
+                                <th>Citations</th>
+                                <th>Public CTs</th>
+                                <th>Total CTs</th>
+                                <th>Organs</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Organs Section -->
+        <section id="organs" class="section">
+            <div class="card">
+                <h2>Organ-Level Analysis</h2>
+                <div class="table-container">
+                    <table id="organsTable">
+                        <thead>
+                            <tr>
+                                <th>Dataset</th>
+                                <th>Pancreas</th>
+                                <th>Liver</th>
+                                <th>Spleen</th>
+                                <th>Stomach</th>
+                                <th>Kidney</th>
+                                <th>Colon</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bias Section -->
+        <section id="bias" class="section">
+            <div class="card">
+                <h2>Bias and Ethical Evaluation</h2>
+                <div class="filters">
+                    <div class="filter-group">
+                        <label>Ethics Approval</label>
+                        <select id="ethicsFilter">
+                            <option value="all">All</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Commercial Use</label>
+                        <select id="commercialFilter">
+                            <option value="all">All</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table id="biasTable">
+                        <thead>
+                            <tr>
+                                <th>Dataset</th>
+                                <th>Ethics Approval</th>
+                                <th>Pseudonymization</th>
+                                <th>Commercial Use</th>
+                                <th>Demographic Info</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Bias Assessment Summary</h2>
+                <div class="chart-container">
+                    <canvas id="biasChart"></canvas>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>Abdomen CT Studies Review Dataset Visualization</p>
+        <p style="margin-top: 0.5rem; font-size: 0.9rem; opacity: 0.7;">Interactive data exploration for medical imaging research</p>
+    </footer>
+
+    <script>
+        let datasetsData = [];
+        let organsData = [];
+        let biasData = [];
+
+        // Load data
+        fetch('data.json')
+            .then(response => response.json())
+            .then(data => {
+                datasetsData = data.datasets;
+                organsData = data.organs;
+                biasData = data.bias;
+                initializeData();
+            })
+            .catch(error => console.error('Error loading data:', error));
+
+        function initializeData() {
+            updateStats();
+            renderDatasets();
+            renderOrgans();
+            renderBias();
+            createCharts();
+        }
+
+        function updateStats() {
+            const totalDatasets = datasetsData.length;
+            const totalCTs = datasetsData.reduce((sum, d) => sum + (parseInt(d['number of CT studies']) || 0), 0);
+            const publicCTs = datasetsData.reduce((sum, d) => sum + (parseInt(d['number of public CT studies']) || 0), 0);
+            const avgCitations = Math.round(datasetsData.reduce((sum, d) => sum + (parseInt(d.Citations) || 0), 0) / totalDatasets);
+
+            document.getElementById('totalDatasets').textContent = totalDatasets;
+            document.getElementById('totalCTStudies').textContent = totalCTs.toLocaleString();
+            document.getElementById('publicCTStudies').textContent = publicCTs.toLocaleString();
+            document.getElementById('avgCitations').textContent = avgCitations;
+        }
+
+        function renderDatasets() {
+            const tbody = document.getElementById('datasetsTable').querySelector('tbody');
+            tbody.innerHTML = datasetsData.map(d => `
+                <tr>
+                    <td><strong>${d.dataset || '-'}</strong></td>
+                    <td>${d['year of publication'] || '-'}</td>
+                    <td>${d.Citations || '-'}</td>
+                    <td>${d['number of public CT studies'] || '-'}</td>
+                    <td>${d['number of CT studies'] || '-'}</td>
+                    <td>${d['Annotated Organ Name'] || '-'}</td>
+                </tr>
+            `).join('');
+        }
+
+        function renderOrgans() {
+            const tbody = document.getElementById('organsTable').querySelector('tbody');
+            tbody.innerHTML = organsData.slice(0, 20).map(d => `
+                <tr>
+                    <td><strong>${d['Unnamed: 0'] || '-'}</strong></td>
+                    <td>${d['Pancreas'] || '-'}</td>
+                    <td>${d['Liver'] || '-'}</td>
+                    <td>${d['Spleen'] || '-'}</td>
+                    <td>${d['Stomach'] || '-'}</td>
+                    <td>${d['Kidney'] || '-'}</td>
+                    <td>${d['Colon'] || '-'}</td>
+                </tr>
+            `).join('');
+        }
+
+        function renderBias() {
+            const tbody = document.getElementById('biasTable').querySelector('tbody');
+            tbody.innerHTML = biasData.map(d => {
+                const ethicsApproval = d['Ethic - approval'] || '';
+                const pseudo = d['Ethic - pseudonymization'] || '';
+                const commercial = d['Ethic - commercial use approval'] || '';
+                const demographic = d['Desc - demographic'] || '';
+
+                return `
+                    <tr>
+                        <td><strong>${d.dataset || '-'}</strong></td>
+                        <td><span class="badge ${getBadgeClass(ethicsApproval)}">${ethicsApproval || 'N/A'}</span></td>
+                        <td><span class="badge ${getBadgeClass(pseudo)}">${pseudo || 'N/A'}</span></td>
+                        <td><span class="badge ${getBadgeClass(commercial)}">${commercial || 'N/A'}</span></td>
+                        <td>${demographic ? '✓' : '-'}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function getBadgeClass(value) {
+            const v = String(value).toLowerCase();
+            if (v.includes('yes') || v === 'y') return 'badge-yes';
+            if (v.includes('no') || v === 'n') return 'badge-no';
+            return 'badge-partial';
+        }
+
+        function createCharts() {
+            // Year distribution chart
+            const yearCounts = {};
+            datasetsData.forEach(d => {
+                const year = d['year of publication'];
+                if (year) {
+                    yearCounts[year] = (yearCounts[year] || 0) + 1;
+                }
+            });
+
+            const yearCtx = document.getElementById('yearChart');
+            new Chart(yearCtx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(yearCounts).sort(),
+                    datasets: [{
+                        label: 'Datasets Published',
+                        data: Object.keys(yearCounts).sort().map(y => yearCounts[y]),
+                        backgroundColor: '#2c5f7e',
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+
+            // Organs chart
+            const organCounts = {};
+            datasetsData.forEach(d => {
+                const organs = String(d['Annotated Organ Name'] || '').split(',');
+                organs.forEach(organ => {
+                    const o = organ.trim();
+                    if (o) organCounts[o] = (organCounts[o] || 0) + 1;
+                });
+            });
+
+            const topOrgans = Object.entries(organCounts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 10);
+
+            const organsCtx = document.getElementById('organsChart');
+            new Chart(organsCtx, {
+                type: 'bar',
+                data: {
+                    labels: topOrgans.map(o => o[0]),
+                    datasets: [{
+                        label: 'Frequency',
+                        data: topOrgans.map(o => o[1]),
+                        backgroundColor: '#d4af37',
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+
+            // Bias chart
+            const biasMetrics = {
+                'Ethics Approval': biasData.filter(d => String(d['Ethic - approval']).toLowerCase().includes('yes')).length,
+                'Pseudonymization': biasData.filter(d => String(d['Ethic - pseudonymization']).toLowerCase().includes('yes')).length,
+                'Commercial Use': biasData.filter(d => String(d['Ethic - commercial use approval']).toLowerCase().includes('yes')).length,
+                'Demographic Info': biasData.filter(d => d['Desc - demographic']).length
+            };
+
+            const biasCtx = document.getElementById('biasChart');
+            new Chart(biasCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(biasMetrics),
+                    datasets: [{
+                        data: Object.values(biasMetrics),
+                        backgroundColor: ['#1a3a52', '#2c5f7e', '#d4af37', '#7c9eb2']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+
+        // Navigation
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById(btn.dataset.section).classList.add('active');
+            });
+        });
+
+        // Search
+        document.getElementById('datasetSearch').addEventListener('input', (e) => {
+            const search = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('#datasetsTable tbody tr');
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(search) ? '' : 'none';
+            });
+        });
+    </script>
+</body>
+</html>
