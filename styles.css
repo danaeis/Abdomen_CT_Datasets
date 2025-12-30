@@ -368,6 +368,135 @@ footer {
 }
 
 /* ============================================
+   ORGAN TILES (for organs.html)
+   ============================================ */
+.organs-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.organ-tile {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+    border: 2px solid var(--border);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.organ-tile:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 25px rgba(0,0,0,0.12);
+    border-color: var(--accent);
+}
+
+.organ-tile h3 {
+    font-family: 'Spectral', serif;
+    color: var(--primary);
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--accent);
+}
+
+.organ-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.organ-stat {
+    text-align: center;
+    padding: 0.75rem;
+    background: var(--light);
+    border-radius: 8px;
+}
+
+.organ-stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--secondary);
+    font-family: 'Spectral', serif;
+}
+
+.organ-stat-label {
+    font-size: 0.75rem;
+    color: #666;
+    margin-top: 0.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.organ-abnormality {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: #fff8f0;
+    border-radius: 8px;
+    border-left: 4px solid var(--accent);
+}
+
+.organ-abnormality-label {
+    font-weight: 600;
+    color: var(--primary);
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.organ-abnormality-text {
+    color: #555;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.dataset-name {
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 6px;
+    text-align: center;
+}
+
+.no-data {
+    color: #999;
+    font-style: italic;
+}
+
+.organs-grid-toggle {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    justify-content: flex-end;
+}
+
+.view-toggle-btn {
+    padding: 0.5rem 1rem;
+    border: 2px solid var(--primary);
+    background: white;
+    color: var(--primary);
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.view-toggle-btn:hover {
+    background: var(--primary);
+    color: white;
+}
+
+.view-toggle-btn.active {
+    background: var(--primary);
+    color: white;
+}
+
+/* ============================================
    RESPONSIVE
    ============================================ */
 @media (max-width: 768px) {

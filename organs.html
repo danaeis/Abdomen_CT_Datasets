@@ -10,7 +10,7 @@
 <body>
     <header>
         <h1>Organ-Level Analysis</h1>
-        <p class="subtitle">Detailed organ segmentation data</p>
+        <p class="subtitle">Detailed organ segmentation data organized by organ</p>
     </header>
 
     <nav>
@@ -23,19 +23,31 @@
     </nav>
 
     <div class="container">
+        <!-- View Toggle -->
         <div class="card">
-            <h2>Organ Segmentation Details</h2>
-            <p style="margin-bottom: 1.5rem; color: #666;">
-                This table shows organ-level data across all datasets. 
-                Columns include: S (Segmented), New (New cases), A (Anomaly cases) for each organ.
-            </p>
-            <div class="table-container">
-                <table id="organsTable">
-                    <thead>
-                        <tr id="tableHeader"></tr>
-                    </thead>
-                    <tbody id="tableBody"></tbody>
-                </table>
+            <div class="organs-grid-toggle">
+                <button class="view-toggle-btn active" onclick="showTileView()">📊 Tile View</button>
+                <button class="view-toggle-btn" onclick="showTableView()">📋 Table View</button>
+            </div>
+        </div>
+
+        <!-- Tile View -->
+        <div id="tileView">
+            <div id="organsContainer"></div>
+        </div>
+
+        <!-- Table View -->
+        <div id="tableView" style="display: none;">
+            <div class="card">
+                <h2>All Organ Data (Table Format)</h2>
+                <div class="table-container">
+                    <table id="organsTable">
+                        <thead>
+                            <tr id="tableHeader"></tr>
+                        </thead>
+                        <tbody id="tableBody"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -47,26 +59,117 @@
     <script>
         let allData = [];
         let columns = [];
+        
+        // Organ name mapping
+        const organNames = {
+            'P': 'Pancreas',
+            'L': 'Liver',
+            'Sp': 'Spleen',
+            'St': 'Stomach',
+            'E': 'Esophagus',
+            'G': 'Gallbladder',
+            'K': 'Kidney',
+            'Ad': 'Adrenal Gland',
+            'D': 'Duodenum',
+            'I': 'Intestine',
+            'C': 'Colon',
+            'R': 'Rectum',
+            'Ao': 'Aorta',
+            'IVC': 'IVC',
+            'H': 'Hepatic Vessels',
+            'P&S': 'Portal & Splenic Veins',
+            'Ce': 'Celiac Trunk',
+            'M': 'Mesenteric Vessels',
+            'LN': 'Lymph Nodes',
+            'Le': 'Abdominal Lesion'
+        };
 
-        // Load and display data
+        // Load data
         fetch('data.json')
             .then(response => response.json())
             .then(data => {
                 allData = data.organs || [];
                 columns = data.columns?.organs || Object.keys(allData[0] || {});
                 
-                renderTable();
+                renderTileView();
+                renderTableView();
             })
             .catch(error => console.error('Error loading data:', error));
 
-        function formatValue(value) {
-            if (value === null || value === undefined || value === '') {
-                return '-';
-            }
-            return String(value);
+        function parseOrganData(row) {
+            const organs = [];
+            const organCodes = Object.keys(organNames);
+            
+            organCodes.forEach(code => {
+                const sKey = `S - ${code}`;
+                const newKey = `New - ${code}`;
+                const aKey = `A - ${code}`;
+                
+                // Check if this organ has any data
+                const ctCount = row[sKey];
+                const newCt = row[newKey];
+                const abnormality = row[aKey];
+                
+                if (ctCount || newCt || abnormality) {
+                    organs.push({
+                        name: organNames[code],
+                        ctCount: ctCount || '-',
+                        newCt: newCt || '-',
+                        abnormality: abnormality || '-'
+                    });
+                }
+            });
+            
+            return organs;
         }
 
-        function renderTable() {
+        function renderTileView() {
+            const container = document.getElementById('organsContainer');
+            
+            const html = allData.map(row => {
+                const datasetName = row['dataset'] || 'Unknown Dataset';
+                const organs = parseOrganData(row);
+                
+                if (organs.length === 0) return '';
+                
+                return `
+                    <div class="card">
+                        <div class="dataset-name">${datasetName}</div>
+                        <div class="organs-container">
+                            ${organs.map(organ => `
+                                <div class="organ-tile">
+                                    <h3>${organ.name}</h3>
+                                    <div class="organ-stats">
+                                        <div class="organ-stat">
+                                            <div class="organ-stat-value">${organ.ctCount}</div>
+                                            <div class="organ-stat-label">CT Counts</div>
+                                        </div>
+                                        <div class="organ-stat">
+                                            <div class="organ-stat-value">${organ.newCt}</div>
+                                            <div class="organ-stat-label">New CTs</div>
+                                        </div>
+                                        <div class="organ-stat">
+                                            <div class="organ-stat-value">${organ.abnormality !== '-' ? '✓' : '–'}</div>
+                                            <div class="organ-stat-label">Abnormality</div>
+                                        </div>
+                                    </div>
+                                    ${organ.abnormality !== '-' ? `
+                                        <div class="organ-abnormality">
+                                            <div class="organ-abnormality-label">Abnormality Covered:</div>
+                                            <div class="organ-abnormality-text">${organ.abnormality}</div>
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            container.innerHTML = html;
+        }
+
+        function renderTableView() {
             const header = document.getElementById('tableHeader');
             const tbody = document.getElementById('tableBody');
             
@@ -75,10 +178,27 @@
             
             // Render rows
             tbody.innerHTML = allData.map(row => {
-                return '<tr>' + columns.map(col => 
-                    `<td>${formatValue(row[col])}</td>`
-                ).join('') + '</tr>';
+                return '<tr>' + columns.map(col => {
+                    const value = row[col];
+                    return `<td>${value || '-'}</td>`;
+                }).join('') + '</tr>';
             }).join('');
+        }
+
+        function showTileView() {
+            document.getElementById('tileView').style.display = 'block';
+            document.getElementById('tableView').style.display = 'none';
+            document.querySelectorAll('.view-toggle-btn').forEach((btn, i) => {
+                btn.classList.toggle('active', i === 0);
+            });
+        }
+
+        function showTableView() {
+            document.getElementById('tileView').style.display = 'none';
+            document.getElementById('tableView').style.display = 'block';
+            document.querySelectorAll('.view-toggle-btn').forEach((btn, i) => {
+                btn.classList.toggle('active', i === 1);
+            });
         }
     </script>
 </body>
