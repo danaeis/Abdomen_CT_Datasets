@@ -3,378 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Abdomen CT Studies Review</title>
+    <title>Abdomen CT Studies Review - Overview</title>
     <link href="https://fonts.googleapis.com/css2?family=Spectral:wght@300;400;600;700&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary: #1a3a52;
-            --secondary: #2c5f7e;
-            --accent: #d4af37;
-            --light: #f8f9fa;
-            --text: #2d3748;
-            --border: #e2e8f0;
-        }
-
-        body {
-            font-family: 'Work Sans', sans-serif;
-            color: var(--text);
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            line-height: 1.6;
-        }
-
-        header {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: white;
-            padding: 3rem 2rem;
-            text-align: center;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-            opacity: 0.3;
-        }
-
-        h1 {
-            font-family: 'Spectral', serif;
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            position: relative;
-            z-index: 1;
-        }
-
-        .subtitle {
-            font-size: 1.1rem;
-            opacity: 0.95;
-            font-weight: 300;
-            position: relative;
-            z-index: 1;
-        }
-
-        nav {
-            background: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        nav ul {
-            list-style: none;
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            padding: 0;
-        }
-
-        nav button {
-            padding: 1rem 1.5rem;
-            border: none;
-            background: none;
-            cursor: pointer;
-            font-family: 'Work Sans', sans-serif;
-            font-size: 0.95rem;
-            font-weight: 500;
-            color: var(--text);
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        nav button:hover {
-            color: var(--secondary);
-        }
-
-        nav button.active {
-            color: var(--secondary);
-        }
-
-        nav button.active::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 1.5rem;
-            right: 1.5rem;
-            height: 3px;
-            background: var(--accent);
-        }
-
-        .container {
-            max-width: 95%;          /* ← Uses 95% of screen for wide tables */
-            margin: 0 auto;
-            padding: 1.5rem;
-        }
-
-        .section {
-            display: none;
-            animation: fadeIn 0.5s ease;
-        }
-
-        .section.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .card {
-            background: white;
-            border-radius: 12px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 2px 20px rgba(0,0,0,0.06);
-            border: 1px solid var(--border);
-        }
-
-        .card h2 {
-            font-family: 'Spectral', serif;
-            color: var(--primary);
-            margin-bottom: 1.5rem;
-            font-size: 1.8rem;
-            font-weight: 600;
-            padding-bottom: 0.75rem;
-            border-bottom: 2px solid var(--accent);
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: white;
-            padding: 1.5rem;
-            border-radius: 10px;
-            text-align: center;
-        }
-
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: 700;
-            font-family: 'Spectral', serif;
-        }
-
-        .stat-label {
-            font-size: 0.9rem;
-            opacity: 0.9;
-            margin-top: 0.5rem;
-        }
-
-        .search-filter {
-            margin-bottom: 1.5rem;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            border: 2px solid var(--border);
-            border-radius: 8px;
-            font-size: 1rem;
-            font-family: 'Work Sans', sans-serif;
-            transition: border-color 0.3s ease;
-        }
-
-        .search-input:focus {
-            outline: none;
-            border-color: var(--secondary);
-        }
-
-        /* ============================================
-           TABLE CONTAINER - Controls Scrolling
-           ============================================ */
-        .table-container {
-            overflow-x: auto;        /* ← HORIZONTAL SCROLL: Change to 'hidden' to disable */
-            overflow-y: auto;        /* ← VERTICAL SCROLL: Change to 'hidden' to disable */
-            max-height: 600px;       /* ← TABLE HEIGHT: Change this number (600px, 800px, etc.) */
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            position: relative;
-        }
-        /* To disable all scrolling, remove overflow-x, overflow-y, and max-height */
-        
-        /* Better scrollbar appearance */
-        .table-container::-webkit-scrollbar {
-            height: 12px;            /* ← Horizontal scrollbar thickness */
-            width: 12px;             /* ← Vertical scrollbar thickness */
-        }
-        
-        .table-container::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 8px;
-        }
-        
-        .table-container::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 8px;
-        }
-        
-        .table-container::-webkit-scrollbar-thumb:hover {
-            background: #555;        /* ← Darker when hovering */
-        }
-        
-        /* ============================================
-           TABLE STYLING
-           ============================================ */
-
-        table {
-            width: max-content;      /* ← Table expands to fit all columns */
-            min-width: 100%;         /* ← But never smaller than container */
-            border-collapse: collapse;
-            font-size: 0.85rem;
-        }
-
-        th {
-            background: var(--primary);
-            color: white;
-            padding: 0.75rem;
-            text-align: left;
-            font-weight: 600;
-            position: sticky;       /* ← Makes header stay visible when scrolling */
-            top: 0;                 /* ← Sticks to top of container */
-            z-index: 10;
-            white-space: nowrap;    /* ← Prevents header text from wrapping */
-        }
-
-        td {
-            padding: 0.6rem 0.75rem;
-            border-bottom: 1px solid var(--border);
-            white-space: nowrap;    /* ← CHANGE TO 'normal' to allow text wrapping */
-            /* max-width: 300px;     ← UNCOMMENT to limit column width */
-        }
-
-        tr:hover {
-            background: #f8f9fa;
-        }
-
-        .total-row {
-            background: #fff8dc !important;
-            font-weight: 600;
-            border-top: 3px solid var(--accent);
-            position: sticky;
-            bottom: 0;
-        }
-
-        .total-row td {
-            font-weight: 600;
-            color: var(--primary);
-            background: #fff8dc;
-        }
-
-        /* ============================================
-           PAPER LINKS - How links to papers appear
-           ============================================ */
-        .paper-link {
-            color: var(--secondary);      /* ← Link color */
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .paper-link:hover {
-            text-decoration: underline;
-            color: var(--accent);         /* ← Color when hovering */
-        }
-
-        .chart-container {
-            position: relative;
-            height: 400px;
-            margin: 2rem 0;
-        }
-
-        .filters {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
-        }
-
-        .filter-group {
-            flex: 1;
-            min-width: 200px;
-        }
-
-        .filter-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            color: var(--primary);
-        }
-
-        .filter-group select {
-            width: 100%;
-            padding: 0.75rem;
-            border: 2px solid var(--border);
-            border-radius: 8px;
-            font-family: 'Work Sans', sans-serif;
-            font-size: 0.95rem;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 500;
-        }
-
-        .badge-yes {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .badge-no {
-            background: #f8d7da;
-            color: #721c24;
-        }
-
-        .badge-partial {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        footer {
-            text-align: center;
-            padding: 2rem;
-            background: white;
-            margin-top: 3rem;
-            border-top: 1px solid var(--border);
-            color: var(--text);
-        }
-
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2rem;
-            }
-            
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            nav button {
-                padding: 0.75rem 1rem;
-                font-size: 0.9rem;
-            }
-        }
-    </style>
 </head>
 <body>
     <header>
@@ -384,122 +16,49 @@
 
     <nav>
         <ul>
-            <li><button class="nav-btn active" data-section="overview">Overview</button></li>
-            <li><button class="nav-btn" data-section="datasets">Dataset Features</button></li>
-            <li><button class="nav-btn" data-section="organs">Organ Analysis</button></li>
-            <li><button class="nav-btn" data-section="bias">Bias Evaluation</button></li>
+            <li><a href="index.html" class="active">Overview</a></li>
+            <li><a href="datasets.html">Dataset Features</a></li>
+            <li><a href="organs.html">Organ Analysis</a></li>
+            <li><a href="bias.html">Bias Evaluation</a></li>
         </ul>
     </nav>
 
     <div class="container">
-        <!-- Overview Section -->
-        <section id="overview" class="section active">
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-number" id="totalDatasets">-</div>
-                    <div class="stat-label">Total Datasets</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="totalCTStudies">-</div>
-                    <div class="stat-label">Total CT Studies</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="publicCTStudies">-</div>
-                    <div class="stat-label">Public CT Studies</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="avgCitations">-</div>
-                    <div class="stat-label">Avg Citations</div>
-                </div>
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="totalDatasets">-</div>
+                <div class="stat-label">Total Datasets</div>
             </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalCTStudies">-</div>
+                <div class="stat-label">Total CT Studies</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="publicCTStudies">-</div>
+                <div class="stat-label">Public CT Studies</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="avgCitations">-</div>
+                <div class="stat-label">Avg Citations</div>
+            </div>
+        </div>
 
-            <div class="card">
-                <h2>Dataset Publications by Year</h2>
-                <div class="chart-container">
-                    <canvas id="yearChart"></canvas>
-                </div>
+        <!-- Year Chart -->
+        <div class="card">
+            <h2>Dataset Publications by Year</h2>
+            <div class="chart-container">
+                <canvas id="yearChart"></canvas>
             </div>
+        </div>
 
-            <div class="card">
-                <h2>Top Annotated Organs</h2>
-                <div class="chart-container">
-                    <canvas id="organsChart"></canvas>
-                </div>
+        <!-- Organs Chart -->
+        <div class="card">
+            <h2>Top Annotated Organs</h2>
+            <div class="chart-container">
+                <canvas id="organsChart"></canvas>
             </div>
-        </section>
-
-        <!-- Datasets Section -->
-        <section id="datasets" class="section">
-            <div class="card">
-                <h2>Dataset Features</h2>
-                <div class="search-filter">
-                    <input type="text" class="search-input" id="datasetSearch" placeholder="Search datasets...">
-                </div>
-                <div class="table-container">
-                    <table id="datasetsTable">
-                        <thead>
-                            <tr id="datasetsTableHeader"></tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- Organs Section -->
-        <section id="organs" class="section">
-            <div class="card">
-                <h2>Organ-Level Analysis</h2>
-                <div class="table-container">
-                    <table id="organsTable">
-                        <thead>
-                            <tr id="organsTableHeader"></tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- Bias Section -->
-        <section id="bias" class="section">
-            <div class="card">
-                <h2>Bias and Ethical Evaluation</h2>
-                <div class="filters">
-                    <div class="filter-group">
-                        <label>Ethics Approval</label>
-                        <select id="ethicsFilter">
-                            <option value="all">All</option>
-                            <option value="yes">Yes</option>
-                            <option value="no">No</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <label>Commercial Use</label>
-                        <select id="commercialFilter">
-                            <option value="all">All</option>
-                            <option value="yes">Yes</option>
-                            <option value="no">No</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="table-container">
-                    <table id="biasTable">
-                        <thead>
-                            <tr id="biasTableHeader"></tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="card">
-                <h2>Bias Assessment Summary</h2>
-                <div class="chart-container">
-                    <canvas id="biasChart"></canvas>
-                </div>
-            </div>
-        </section>
+        </div>
     </div>
 
     <footer>
@@ -508,322 +67,84 @@
     </footer>
 
     <script>
-        let datasetsData = [];
-        let organsData = [];
-        let biasData = [];
-        let totalRow = {};
-        let columns = {};
+        // Load data and create charts
+        fetch('data.json')
+            .then(response => response.json())
+            .then(data => {
+                const datasets = data.datasets || [];
+                const total = data.total || {};
+                
+                // Update stats
+                document.getElementById('totalDatasets').textContent = datasets.length;
+                document.getElementById('totalCTStudies').textContent = 
+                    (total['number of CT studies'] || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                document.getElementById('publicCTStudies').textContent = 
+                    (total['number of public CT studies'] || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                
+                const avgCitations = Math.round(
+                    datasets.reduce((sum, d) => sum + (parseInt(d.Citations) || 0), 0) / datasets.length
+                );
+                document.getElementById('avgCitations').textContent = avgCitations;
 
-        // ===========================================
-        // CONFIGURATION: Choose how to load data
-        // ===========================================
-        const USE_SEPARATE_FILES = false;  // ← Change to true to use separate files
-        
-        // Load data
-        if (USE_SEPARATE_FILES) {
-            // Load from separate files (more flexible for updates)
-            Promise.all([
-                fetch('datasets_data.json').then(r => r.json()),
-                fetch('organs_data.json').then(r => r.json()),
-                fetch('bias_data.json').then(r => r.json())
-            ]).then(([datasets, organs, bias]) => {
-                datasetsData = datasets.datasets;
-                totalRow = datasets.total || {};
-                organsData = organs.organs;
-                biasData = bias.bias;
-                columns = {
-                    datasets: datasets.columns,
-                    organs: organs.columns,
-                    bias: bias.columns
-                };
-                initializeData();
-            }).catch(error => console.error('Error loading data:', error));
-        } else {
-            // Load from combined file (simpler, one file)
-            fetch('data.json')
-                .then(response => response.json())
-                .then(data => {
-                    datasetsData = data.datasets;
-                    organsData = data.organs;
-                    biasData = data.bias;
-                    totalRow = data.total || {};
-                    columns = data.columns || {};
-                    initializeData();
-                })
-                .catch(error => console.error('Error loading data:', error));
-        }
-
-        function initializeData() {
-            updateStats();
-            renderDatasets();
-            renderOrgans();
-            renderBias();
-            createCharts();
-        }
-
-        function updateStats() {
-            const totalDatasets = datasetsData.length;
-            const totalCTs = totalRow['number of CT studies'] || datasetsData.reduce((sum, d) => sum + (parseInt(d['number of CT studies']) || 0), 0);
-            const publicCTs = totalRow['number of public CT studies'] || datasetsData.reduce((sum, d) => sum + (parseInt(d['number of public CT studies']) || 0), 0);
-            const avgCitations = Math.round(datasetsData.reduce((sum, d) => sum + (parseInt(d.Citations) || 0), 0) / totalDatasets);
-
-            document.getElementById('totalDatasets').textContent = totalDatasets;
-            document.getElementById('totalCTStudies').textContent = totalCTs.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-            document.getElementById('publicCTStudies').textContent = publicCTs.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-            document.getElementById('avgCitations').textContent = avgCitations;
-        }
-
-        function formatCellValue(value, columnName, rowData) {
-            if (value === null || value === undefined || value === '') {
-                return '-';
-            }
-            
-            // Handle paper links - look for actual URLs or DOIs
-            if (columnName === 'paper link') {
-                const strValue = String(value).trim();
-                // Check if it's an actual URL (contains http or doi)
-                if (strValue && strValue !== '-' && strValue !== 'link' && 
-                    (strValue.includes('http') || strValue.includes('doi'))) {
-                    const url = strValue.startsWith('http') ? strValue : `https://${strValue}`;
-                    return `<a href="${url}" target="_blank" class="paper-link">📄 Paper</a>`;
-                }
-                // If dataset name is available, search for it
-                if (rowData && rowData.dataset) {
-                    const searchUrl = `https://scholar.google.com/scholar?q=${encodeURIComponent(rowData.dataset)}`;
-                    return `<a href="${searchUrl}" target="_blank" class="paper-link">🔍 Search</a>`;
-                }
-                return '-';
-            }
-            
-            return String(value);
-        }
-
-        function renderDatasets() {
-            const table = document.getElementById('datasetsTable');
-            const thead = document.getElementById('datasetsTableHeader');
-            const tbody = table.querySelector('tbody');
-            
-            // Get all columns
-            const cols = columns.datasets || Object.keys(datasetsData[0] || {});
-            
-            // Render headers
-            thead.innerHTML = cols.map(col => `<th>${col}</th>`).join('');
-            
-            // Render data rows - PASS ROW DATA for paper link generation
-            let rowsHTML = datasetsData.map(d => {
-                return `<tr>${cols.map(col => `<td>${formatCellValue(d[col], col, d)}</td>`).join('')}</tr>`;
-            }).join('');
-            
-            // Add total row
-            if (Object.keys(totalRow).length > 0) {
-                rowsHTML += '<tr class="total-row">' + cols.map(col => {
-                    if (col === 'dataset') {
-                        return '<td><strong>TOTAL</strong></td>';
-                    }
-                    const value = totalRow[col];
-                    return `<td>${formatCellValue(value, col, totalRow)}</td>`;
-                }).join('') + '</tr>';
-            }
-            
-            tbody.innerHTML = rowsHTML;
-        }
-
-        function renderOrgans() {
-            const table = document.getElementById('organsTable');
-            const thead = document.getElementById('organsTableHeader');
-            const tbody = table.querySelector('tbody');
-            
-            // Get all columns
-            const cols = columns.organs || Object.keys(organsData[0] || {});
-            
-            // Render headers
-            thead.innerHTML = cols.map(col => `<th>${col}</th>`).join('');
-            
-            // Render all data rows
-            tbody.innerHTML = organsData.map(d => {
-                return `<tr>${cols.map(col => `<td>${formatCellValue(d[col], col)}</td>`).join('')}</tr>`;
-            }).join('');
-        }
-
-        function renderBias() {
-            const table = document.getElementById('biasTable');
-            const thead = document.getElementById('biasTableHeader');
-            const tbody = table.querySelector('tbody');
-            
-            // Get all columns
-            const cols = columns.bias || Object.keys(biasData[0] || {});
-            
-            // Render headers
-            thead.innerHTML = cols.map(col => `<th>${col}</th>`).join('');
-            
-            // Render all data rows
-            tbody.innerHTML = biasData.map(d => {
-                return `<tr>${cols.map(col => {
-                    const value = d[col];
-                    // Add badge styling for ethics/approval columns
-                    if (col.toLowerCase().includes('ethic') || col.toLowerCase().includes('approval')) {
-                        const badgeClass = getBadgeClass(value);
-                        const displayValue = formatCellValue(value, col);
-                        if (displayValue !== '-') {
-                            return `<td><span class="badge ${badgeClass}">${displayValue}</span></td>`;
-                        }
-                    }
-                    return `<td>${formatCellValue(value, col)}</td>`;
-                }).join('')}</tr>`;
-            }).join('');
-        }
-
-        function getBadgeClass(value) {
-            const v = String(value).toLowerCase();
-            if (v.includes('yes') || v === 'y') return 'badge-yes';
-            if (v.includes('no') || v === 'n') return 'badge-no';
-            return 'badge-partial';
-        }
-
-        function createCharts() {
-            // Year distribution chart
-            const yearCounts = {};
-            datasetsData.forEach(d => {
-                const year = d['year of publication'];
-                if (year) {
-                    yearCounts[year] = (yearCounts[year] || 0) + 1;
-                }
-            });
-
-            const yearCtx = document.getElementById('yearChart');
-            new Chart(yearCtx, {
-                type: 'bar',
-                data: {
-                    labels: Object.keys(yearCounts).sort(),
-                    datasets: [{
-                        label: 'Datasets Published',
-                        data: Object.keys(yearCounts).sort().map(y => yearCounts[y]),
-                        backgroundColor: '#2c5f7e',
-                        borderRadius: 6
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false }
-                    }
-                }
-            });
-
-            // Organs chart
-            const organCounts = {};
-            datasetsData.forEach(d => {
-                const organs = String(d['Annotated Organ Name'] || '').split(',');
-                organs.forEach(organ => {
-                    const o = organ.trim();
-                    if (o && o !== '-') organCounts[o] = (organCounts[o] || 0) + 1;
+                // Year distribution chart
+                const yearCounts = {};
+                datasets.forEach(d => {
+                    const year = d['year of publication'];
+                    if (year) yearCounts[year] = (yearCounts[year] || 0) + 1;
                 });
-            });
 
-            const topOrgans = Object.entries(organCounts)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 10);
-
-            const organsCtx = document.getElementById('organsChart');
-            new Chart(organsCtx, {
-                type: 'bar',
-                data: {
-                    labels: topOrgans.map(o => o[0]),
-                    datasets: [{
-                        label: 'Frequency',
-                        data: topOrgans.map(o => o[1]),
-                        backgroundColor: '#d4af37',
-                        borderRadius: 6
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    indexAxis: 'y',
-                    plugins: {
-                        legend: { display: false }
+                new Chart(document.getElementById('yearChart'), {
+                    type: 'bar',
+                    data: {
+                        labels: Object.keys(yearCounts).sort(),
+                        datasets: [{
+                            label: 'Datasets Published',
+                            data: Object.keys(yearCounts).sort().map(y => yearCounts[y]),
+                            backgroundColor: '#2c5f7e',
+                            borderRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } }
                     }
-                }
-            });
+                });
 
-            // Bias chart
-            const biasMetrics = {
-                'Ethics Approval': biasData.filter(d => String(d['Ethic - approval']).toLowerCase().includes('yes')).length,
-                'Pseudonymization': biasData.filter(d => String(d['Ethic - pseudonymization']).toLowerCase().includes('yes')).length,
-                'Commercial Use': biasData.filter(d => String(d['Ethic - commercial use approval']).toLowerCase().includes('yes')).length,
-                'Demographic Info': biasData.filter(d => d['Desc - demographic']).length
-            };
+                // Organs chart
+                const organCounts = {};
+                datasets.forEach(d => {
+                    const organs = String(d['Annotated Organ Name'] || '').split(',');
+                    organs.forEach(organ => {
+                        const o = organ.trim();
+                        if (o && o !== '-') organCounts[o] = (organCounts[o] || 0) + 1;
+                    });
+                });
 
-            const biasCtx = document.getElementById('biasChart');
-            new Chart(biasCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: Object.keys(biasMetrics),
-                    datasets: [{
-                        data: Object.values(biasMetrics),
-                        backgroundColor: ['#1a3a52', '#2c5f7e', '#d4af37', '#7c9eb2']
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false
-                }
-            });
-        }
+                const topOrgans = Object.entries(organCounts)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 10);
 
-        // Navigation
-        document.querySelectorAll('.nav-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-                btn.classList.add('active');
-                document.getElementById(btn.dataset.section).classList.add('active');
-            });
-        });
-
-        // Search functionality
-        document.getElementById('datasetSearch').addEventListener('input', (e) => {
-            const search = e.target.value.toLowerCase();
-            const rows = document.querySelectorAll('#datasetsTable tbody tr');
-            rows.forEach(row => {
-                if (!row.classList.contains('total-row')) {
-                    const text = row.textContent.toLowerCase();
-                    row.style.display = text.includes(search) ? '' : 'none';
-                }
-            });
-        });
-
-        // Filter functionality for bias table
-        function applyBiasFilters() {
-            const ethicsFilter = document.getElementById('ethicsFilter').value;
-            const commercialFilter = document.getElementById('commercialFilter').value;
-            const rows = document.querySelectorAll('#biasTable tbody tr');
-            
-            rows.forEach((row, index) => {
-                const data = biasData[index];
-                if (!data) return;
-                
-                let show = true;
-                
-                if (ethicsFilter !== 'all') {
-                    const ethics = String(data['Ethic - approval'] || '').toLowerCase();
-                    show = show && ((ethicsFilter === 'yes' && ethics.includes('yes')) || 
-                                   (ethicsFilter === 'no' && ethics.includes('no')));
-                }
-                
-                if (commercialFilter !== 'all') {
-                    const commercial = String(data['Ethic - commercial use approval'] || '').toLowerCase();
-                    show = show && ((commercialFilter === 'yes' && commercial.includes('yes')) || 
-                                   (commercialFilter === 'no' && commercial.includes('no')));
-                }
-                
-                row.style.display = show ? '' : 'none';
-            });
-        }
-
-        document.getElementById('ethicsFilter').addEventListener('change', applyBiasFilters);
-        document.getElementById('commercialFilter').addEventListener('change', applyBiasFilters);
+                new Chart(document.getElementById('organsChart'), {
+                    type: 'bar',
+                    data: {
+                        labels: topOrgans.map(o => o[0]),
+                        datasets: [{
+                            label: 'Frequency',
+                            data: topOrgans.map(o => o[1]),
+                            backgroundColor: '#d4af37',
+                            borderRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        indexAxis: 'y',
+                        plugins: { legend: { display: false } }
+                    }
+                });
+            })
+            .catch(error => console.error('Error loading data:', error));
     </script>
 </body>
 </html>

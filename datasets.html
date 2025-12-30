@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dataset Features - Abdomen CT Review</title>
+    <link href="https://fonts.googleapis.com/css2?family=Spectral:wght@300;400;600;700&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Dataset Features</h1>
+        <p class="subtitle">Detailed information about all datasets</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">Overview</a></li>
+            <li><a href="datasets.html" class="active">Dataset Features</a></li>
+            <li><a href="organs.html">Organ Analysis</a></li>
+            <li><a href="bias.html">Bias Evaluation</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <div class="card">
+            <h2>All Datasets</h2>
+            <div class="search-filter">
+                <input type="text" class="search-input" id="searchInput" placeholder="Search datasets by name, year, organs...">
+            </div>
+            <div class="table-container">
+                <table id="datasetsTable">
+                    <thead>
+                        <tr id="tableHeader"></tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Abdomen CT Studies Review Dataset Visualization</p>
+    </footer>
+
+    <script>
+        let allData = [];
+        let columns = [];
+
+        // Load and display data
+        fetch('data.json')
+            .then(response => response.json())
+            .then(data => {
+                allData = data.datasets || [];
+                const total = data.total || {};
+                columns = data.columns?.datasets || Object.keys(allData[0] || {});
+                
+                renderTable();
+                addTotalRow(total);
+            })
+            .catch(error => console.error('Error loading data:', error));
+
+        function formatValue(value, columnName, rowData) {
+            if (value === null || value === undefined || value === '') {
+                return '-';
+            }
+            
+            // Handle paper links
+            if (columnName === 'paper link') {
+                const strValue = String(value).trim();
+                if (strValue && strValue !== '-' && strValue !== 'link' && 
+                    (strValue.includes('http') || strValue.includes('doi'))) {
+                    const url = strValue.startsWith('http') ? strValue : `https://${strValue}`;
+                    return `<a href="${url}" target="_blank" class="paper-link">📄 Paper</a>`;
+                }
+                if (rowData && rowData.dataset) {
+                    const searchUrl = `https://scholar.google.com/scholar?q=${encodeURIComponent(rowData.dataset)}`;
+                    return `<a href="${searchUrl}" target="_blank" class="paper-link">🔍 Search</a>`;
+                }
+                return '-';
+            }
+            
+            return String(value);
+        }
+
+        function renderTable() {
+            const header = document.getElementById('tableHeader');
+            const tbody = document.getElementById('tableBody');
+            
+            // Render headers
+            header.innerHTML = columns.map(col => `<th>${col}</th>`).join('');
+            
+            // Render rows
+            tbody.innerHTML = allData.map(row => {
+                return '<tr>' + columns.map(col => 
+                    `<td>${formatValue(row[col], col, row)}</td>`
+                ).join('') + '</tr>';
+            }).join('');
+        }
+
+        function addTotalRow(total) {
+            const tbody = document.getElementById('tableBody');
+            const totalRowHTML = '<tr class="total-row">' + columns.map(col => {
+                if (col === 'dataset') {
+                    return '<td><strong>TOTAL</strong></td>';
+                }
+                return `<td>${formatValue(total[col], col, total)}</td>`;
+            }).join('') + '</tr>';
+            tbody.innerHTML += totalRowHTML;
+        }
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const search = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('#tableBody tr');
+            rows.forEach(row => {
+                if (!row.classList.contains('total-row')) {
+                    const text = row.textContent.toLowerCase();
+                    row.style.display = text.includes(search) ? '' : 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

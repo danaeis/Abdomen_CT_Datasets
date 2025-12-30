@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organ Analysis - Abdomen CT Review</title>
+    <link href="https://fonts.googleapis.com/css2?family=Spectral:wght@300;400;600;700&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Organ-Level Analysis</h1>
+        <p class="subtitle">Detailed organ segmentation data</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">Overview</a></li>
+            <li><a href="datasets.html">Dataset Features</a></li>
+            <li><a href="organs.html" class="active">Organ Analysis</a></li>
+            <li><a href="bias.html">Bias Evaluation</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <div class="card">
+            <h2>Organ Segmentation Details</h2>
+            <p style="margin-bottom: 1.5rem; color: #666;">
+                This table shows organ-level data across all datasets. 
+                Columns include: S (Segmented), New (New cases), A (Anomaly cases) for each organ.
+            </p>
+            <div class="table-container">
+                <table id="organsTable">
+                    <thead>
+                        <tr id="tableHeader"></tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Abdomen CT Studies Review Dataset Visualization</p>
+    </footer>
+
+    <script>
+        let allData = [];
+        let columns = [];
+
+        // Load and display data
+        fetch('data.json')
+            .then(response => response.json())
+            .then(data => {
+                allData = data.organs || [];
+                columns = data.columns?.organs || Object.keys(allData[0] || {});
+                
+                renderTable();
+            })
+            .catch(error => console.error('Error loading data:', error));
+
+        function formatValue(value) {
+            if (value === null || value === undefined || value === '') {
+                return '-';
+            }
+            return String(value);
+        }
+
+        function renderTable() {
+            const header = document.getElementById('tableHeader');
+            const tbody = document.getElementById('tableBody');
+            
+            // Render headers
+            header.innerHTML = columns.map(col => `<th>${col}</th>`).join('');
+            
+            // Render rows
+            tbody.innerHTML = allData.map(row => {
+                return '<tr>' + columns.map(col => 
+                    `<td>${formatValue(row[col])}</td>`
+                ).join('') + '</tr>';
+            }).join('');
+        }
+    </script>
+</body>
+</html>

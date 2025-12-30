@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bias Evaluation - Abdomen CT Review</title>
+    <link href="https://fonts.googleapis.com/css2?family=Spectral:wght@300;400;600;700&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Bias and Ethical Evaluation</h1>
+        <p class="subtitle">Assessment of dataset fairness and ethics</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">Overview</a></li>
+            <li><a href="datasets.html">Dataset Features</a></li>
+            <li><a href="organs.html">Organ Analysis</a></li>
+            <li><a href="bias.html" class="active">Bias Evaluation</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <!-- Filters -->
+        <div class="card">
+            <h2>Filter Datasets</h2>
+            <div class="filters">
+                <div class="filter-group">
+                    <label>Ethics Approval</label>
+                    <select id="ethicsFilter">
+                        <option value="all">All</option>
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Commercial Use</label>
+                    <select id="commercialFilter">
+                        <option value="all">All</option>
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="card">
+            <h2>Bias Assessment Details</h2>
+            <div class="table-container">
+                <table id="biasTable">
+                    <thead>
+                        <tr id="tableHeader"></tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Chart -->
+        <div class="card">
+            <h2>Bias Metrics Summary</h2>
+            <div class="chart-container">
+                <canvas id="biasChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Abdomen CT Studies Review Dataset Visualization</p>
+    </footer>
+
+    <script>
+        let allData = [];
+        let columns = [];
+
+        // Load and display data
+        fetch('data.json')
+            .then(response => response.json())
+            .then(data => {
+                allData = data.bias || [];
+                columns = data.columns?.bias || Object.keys(allData[0] || {});
+                
+                renderTable();
+                createChart();
+            })
+            .catch(error => console.error('Error loading data:', error));
+
+        function getBadgeClass(value) {
+            const v = String(value).toLowerCase();
+            if (v.includes('yes') || v === 'y') return 'badge-yes';
+            if (v.includes('no') || v === 'n') return 'badge-no';
+            return 'badge-partial';
+        }
+
+        function formatValue(value, columnName) {
+            if (value === null || value === undefined || value === '') {
+                return '-';
+            }
+            
+            // Add badges for ethics/approval columns
+            if (columnName.toLowerCase().includes('ethic') || 
+                columnName.toLowerCase().includes('approval')) {
+                const badgeClass = getBadgeClass(value);
+                const displayValue = String(value);
+                if (displayValue !== '-') {
+                    return `<span class="badge ${badgeClass}">${displayValue}</span>`;
+                }
+            }
+            
+            return String(value);
+        }
+
+        function renderTable() {
+            const header = document.getElementById('tableHeader');
+            const tbody = document.getElementById('tableBody');
+            
+            // Render headers
+            header.innerHTML = columns.map(col => `<th>${col}</th>`).join('');
+            
+            // Render rows
+            tbody.innerHTML = allData.map(row => {
+                return '<tr>' + columns.map(col => 
+                    `<td>${formatValue(row[col], col)}</td>`
+                ).join('') + '</tr>';
+            }).join('');
+        }
+
+        function createChart() {
+            const biasMetrics = {
+                'Ethics Approval': allData.filter(d => 
+                    String(d['Ethic - approval']).toLowerCase().includes('yes')).length,
+                'Pseudonymization': allData.filter(d => 
+                    String(d['Ethic - pseudonymization']).toLowerCase().includes('yes')).length,
+                'Commercial Use': allData.filter(d => 
+                    String(d['Ethic - commercial use approval']).toLowerCase().includes('yes')).length,
+                'Demographic Info': allData.filter(d => d['Desc - demographic']).length
+            };
+
+            new Chart(document.getElementById('biasChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(biasMetrics),
+                    datasets: [{
+                        data: Object.values(biasMetrics),
+                        backgroundColor: ['#1a3a52', '#2c5f7e', '#d4af37', '#7c9eb2']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+
+        // Filter functionality
+        function applyFilters() {
+            const ethicsFilter = document.getElementById('ethicsFilter').value;
+            const commercialFilter = document.getElementById('commercialFilter').value;
+            const rows = document.querySelectorAll('#tableBody tr');
+            
+            rows.forEach((row, index) => {
+                const data = allData[index];
+                if (!data) return;
+                
+                let show = true;
+                
+                if (ethicsFilter !== 'all') {
+                    const ethics = String(data['Ethic - approval'] || '').toLowerCase();
+                    show = show && ((ethicsFilter === 'yes' && ethics.includes('yes')) || 
+                                   (ethicsFilter === 'no' && ethics.includes('no')));
+                }
+                
+                if (commercialFilter !== 'all') {
+                    const commercial = String(data['Ethic - commercial use approval'] || '').toLowerCase();
+                    show = show && ((commercialFilter === 'yes' && commercial.includes('yes')) || 
+                                   (commercialFilter === 'no' && commercial.includes('no')));
+                }
+                
+                row.style.display = show ? '' : 'none';
+            });
+        }
+
+        document.getElementById('ethicsFilter').addEventListener('change', applyFilters);
+        document.getElementById('commercialFilter').addEventListener('change', applyFilters);
+    </script>
+</body>
+</html>
