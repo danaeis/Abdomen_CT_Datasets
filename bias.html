@@ -24,6 +24,9 @@
     </nav>
 
     <div class="container">
+        <!-- Summary Stats -->
+        <div class="stats-grid" id="biasStats"></div>
+
         <!-- Filters -->
         <div class="card">
             <h2>Filter Datasets</h2>
@@ -84,10 +87,32 @@
                 allData = data.bias || [];
                 columns = data.columns?.bias || Object.keys(allData[0] || {});
                 
+                renderSummaryStats();
                 renderTable();
                 createChart();
             })
             .catch(error => console.error('Error loading data:', error));
+
+        function renderSummaryStats() {
+            const statsContainer = document.getElementById('biasStats');
+            
+            const stats = {
+                'Total Datasets': allData.length,
+                'Ethics Approved': allData.filter(d => 
+                    String(d['Ethic - approval'] || '').toLowerCase().includes('yes')).length,
+                'Pseudonymized': allData.filter(d => 
+                    String(d['Ethic - pseudonymization'] || '').toLowerCase().includes('yes')).length,
+                'Commercial Use OK': allData.filter(d => 
+                    String(d['Ethic - commercial use approval'] || '').toLowerCase().includes('yes')).length
+            };
+
+            statsContainer.innerHTML = Object.entries(stats).map(([label, value]) => `
+                <div class="stat-card">
+                    <div class="stat-number">${value}</div>
+                    <div class="stat-label">${label}</div>
+                </div>
+            `).join('');
+        }
 
         function getBadgeClass(value) {
             const v = String(value).toLowerCase();
@@ -98,6 +123,28 @@
 
         function formatValue(value, columnName) {
             if (value === null || value === undefined || value === '') {
+                return '-';
+            }
+            
+            // Handle Data Link column
+            if (columnName === 'Data Link') {
+                const strValue = String(value).trim();
+                if (strValue && strValue !== '-' && 
+                    (strValue.includes('http') || strValue.includes('doi'))) {
+                    const url = strValue.startsWith('http') ? strValue : `https://${strValue}`;
+                    return `<a href="${url}" target="_blank" class="paper-link">🔗 Data</a>`;
+                }
+                return '-';
+            }
+            
+            // Handle Paper Link column
+            if (columnName === 'Paper Link') {
+                const strValue = String(value).trim();
+                if (strValue && strValue !== '-' && 
+                    (strValue.includes('http') || strValue.includes('doi'))) {
+                    const url = strValue.startsWith('http') ? strValue : `https://${strValue}`;
+                    return `<a href="${url}" target="_blank" class="paper-link">📄 Paper</a>`;
+                }
                 return '-';
             }
             
@@ -132,12 +179,13 @@
         function createChart() {
             const biasMetrics = {
                 'Ethics Approval': allData.filter(d => 
-                    String(d['Ethic - approval']).toLowerCase().includes('yes')).length,
+                    String(d['Ethic - approval'] || '').toLowerCase().includes('yes')).length,
                 'Pseudonymization': allData.filter(d => 
-                    String(d['Ethic - pseudonymization']).toLowerCase().includes('yes')).length,
+                    String(d['Ethic - pseudonymization'] || '').toLowerCase().includes('yes')).length,
                 'Commercial Use': allData.filter(d => 
-                    String(d['Ethic - commercial use approval']).toLowerCase().includes('yes')).length,
-                'Demographic Info': allData.filter(d => d['Desc - demographic']).length
+                    String(d['Ethic - commercial use approval'] || '').toLowerCase().includes('yes')).length,
+                'Developing World Applicable': allData.filter(d => 
+                    String(d['Application in developing world (Rob geographical)'] || '').toLowerCase().includes('yes')).length
             };
 
             new Chart(document.getElementById('biasChart'), {
@@ -151,7 +199,16 @@
                 },
                 options: {
                     responsive: true,
-                    maintainAspectRatio: false
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Datasets with "Yes" for Each Criterion'
+                        }
+                    }
                 }
             });
         }

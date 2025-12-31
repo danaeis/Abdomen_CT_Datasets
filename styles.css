@@ -316,11 +316,16 @@ tr:hover {
     color: var(--secondary);
     text-decoration: none;
     font-weight: 500;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    display: inline-block;
+    transition: all 0.3s ease;
 }
 
 .paper-link:hover {
     text-decoration: underline;
     color: var(--accent);
+    background: rgba(212, 175, 55, 0.1);
 }
 
 .badge {
