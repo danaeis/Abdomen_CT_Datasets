@@ -25,10 +25,16 @@
     <div class="container">
         <div class="card">
             <h2>All Datasets</h2>
-            <div class="search-filter">
-                <input type="text" class="search-input" id="searchInput" placeholder="Search datasets by name, year, organs...">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <div class="search-filter" style="flex: 1; margin: 0; margin-right: 1rem;">
+                    <input type="text" class="search-input" id="searchInput" placeholder="Search datasets by name, year, organs...">
+                </div>
+                <div>
+                    <button class="view-toggle-btn active" id="normalViewBtn" onclick="setNormalView()">📖 Readable</button>
+                    <button class="view-toggle-btn" id="compactViewBtn" onclick="setCompactView()">📊 Compact</button>
+                </div>
             </div>
-            <div class="table-container">
+            <div class="table-container" id="tableContainer">
                 <table id="datasetsTable">
                     <thead>
                         <tr id="tableHeader"></tr>
@@ -65,14 +71,26 @@
                 return '-';
             }
             
-            // Handle paper links
-            if (columnName === 'paper link') {
+            // Handle Data Link column
+            if (columnName === 'Data Link') {
                 const strValue = String(value).trim();
-                if (strValue && strValue !== '-' && strValue !== 'link' && 
+                if (strValue && strValue !== '-' && 
+                    (strValue.includes('http') || strValue.includes('doi'))) {
+                    const url = strValue.startsWith('http') ? strValue : `https://${strValue}`;
+                    return `<a href="${url}" target="_blank" class="paper-link">🔗 Data</a>`;
+                }
+                return '-';
+            }
+            
+            // Handle Paper Link column
+            if (columnName === 'Paper Link') {
+                const strValue = String(value).trim();
+                if (strValue && strValue !== '-' && 
                     (strValue.includes('http') || strValue.includes('doi'))) {
                     const url = strValue.startsWith('http') ? strValue : `https://${strValue}`;
                     return `<a href="${url}" target="_blank" class="paper-link">📄 Paper</a>`;
                 }
+                // Fallback to Google Scholar search
                 if (rowData && rowData.dataset) {
                     const searchUrl = `https://scholar.google.com/scholar?q=${encodeURIComponent(rowData.dataset)}`;
                     return `<a href="${searchUrl}" target="_blank" class="paper-link">🔍 Search</a>`;
@@ -80,7 +98,13 @@
                 return '-';
             }
             
-            return String(value);
+            // Format long text with line breaks
+            const strValue = String(value);
+            if (strValue.length > 200) {
+                return `<span style="display: block; max-height: 150px; overflow-y: auto;">${strValue}</span>`;
+            }
+            
+            return strValue;
         }
 
         function renderTable() {
@@ -120,6 +144,21 @@
                 }
             });
         });
+
+        // View toggle functions
+        function setNormalView() {
+            const table = document.getElementById('datasetsTable');
+            table.classList.remove('compact-view');
+            document.getElementById('normalViewBtn').classList.add('active');
+            document.getElementById('compactViewBtn').classList.remove('active');
+        }
+
+        function setCompactView() {
+            const table = document.getElementById('datasetsTable');
+            table.classList.add('compact-view');
+            document.getElementById('compactViewBtn').classList.add('active');
+            document.getElementById('normalViewBtn').classList.remove('active');
+        }
     </script>
 </body>
 </html>
