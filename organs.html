@@ -98,12 +98,12 @@
 
         function parseOrganData(row) {
             const organs = [];
-            const organCodes = Object.keys(organNames);
+            const organCodes = Object.values(organNames);
             
             organCodes.forEach(code => {
-                const sKey = `S - ${code}`;
-                const newKey = `New - ${code}`;
-                const aKey = `A - ${code}`;
+                const sKey = `${code} segmented`;
+                const newKey = `New CTs - ${code} segmented`;
+                const aKey = `${code} Abnormalities`;
                 
                 // Check if this organ has any data
                 const ctCount = row[sKey];
